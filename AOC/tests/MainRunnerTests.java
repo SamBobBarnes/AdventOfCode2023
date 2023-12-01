@@ -7,9 +7,15 @@ public class MainRunnerTests {
     @Test
     public void Day1Part1() {
 
-        String actual = Day1.Part1.Run();
+        int actual = Day1.Part1.Run();
 
-        Assertions.assertEquals("Day1 Part1 running!", actual);
+        Assertions.assertEquals(53651, actual);
+    }
+    @Test
+    public void Day1Part2() {
 
+        int actual = Day1.Part2.Run();
+
+        Assertions.assertEquals(281, actual);
     }
 }
