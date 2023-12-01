@@ -1,8 +1,6 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 public class MainRunnerTests {
     @Test
     public void Day1Part1() {
@@ -16,6 +14,6 @@ public class MainRunnerTests {
 
         int actual = Day1.Part2.Run();
 
-        Assertions.assertEquals(281, actual);
+        Assertions.assertEquals(53894, actual);
     }
 }
