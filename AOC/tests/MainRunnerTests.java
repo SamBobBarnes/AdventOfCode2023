@@ -24,7 +24,7 @@ public class MainRunnerTests {
 
         int actual = Day2.Part1.Run();
 
-        Assertions.assertEquals(0, actual);
+        Assertions.assertEquals(2207, actual);
     }
     @Test
     public void Day2Part2() {
