@@ -31,7 +31,7 @@ public class MainRunnerTests {
 
         int actual = Day2.Part2.Run();
 
-        Assertions.assertEquals(0, actual);
+        Assertions.assertEquals(62241, actual);
     }
     //endregion
 }
