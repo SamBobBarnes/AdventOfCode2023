@@ -19,7 +19,6 @@ public class Part2 extends AdventBase {
             int minGreen = 0;
             int minBlue = 0;
 
-            int game = parseInt(line.substring(5,line.indexOf(':')));
             String setString = line.substring(line.indexOf(':')+1).replaceAll(" ","");
             String[] sets = setString.split(";");
             for(String set: sets) {
