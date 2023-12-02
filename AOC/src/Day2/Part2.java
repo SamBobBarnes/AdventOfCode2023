@@ -12,10 +12,6 @@ public class Part2 extends AdventBase {
 
         List<String> input = LoadInput(2,false);
 
-        int maxRed = 12;
-        int maxGreen = 13;
-        int maxBlue = 14;
-
         int result = 0;
 
         for(String line: input) {
