@@ -34,4 +34,20 @@ public class MainRunnerTests {
         Assertions.assertEquals(62241, actual);
     }
     //endregion
+    //region Day3
+    @Test
+    public void Day3Part1() {
+
+        int actual = Day3.Part1.Run();
+
+        Assertions.assertEquals(0, actual);
+    }
+    @Test
+    public void Day3Part2() {
+
+        int actual = Day3.Part2.Run();
+
+        Assertions.assertEquals(0, actual);
+    }
+    //endregion
 }
