@@ -32,15 +32,6 @@ public class Part2 extends AdventBase {
         return result;
     }
 
-    private static boolean IsPartNumber(Number number, List<Symbol> symbols) {
-        int rangeX1 = number.x-1;
-        int rangeX2 = number.x+ number.length;
-        int rangeY1 = number.y-1;
-        int rangeY2 = number.y+1;
-
-        return symbols.stream().anyMatch(s -> s.x >= rangeX1 && s.x <= rangeX2 && s.y >= rangeY1 && s.y <= rangeY2);
-    }
-
     private static List<Symbol> FindSymbols(String line, int yIndex) {
         List<Symbol> symbols = new ArrayList<>();
 
@@ -96,7 +87,7 @@ public class Part2 extends AdventBase {
             if(number.IsTouchingSymbol(symbols)) foundNumbers.add(number);
         }
 
-        if(foundNumbers.stream().count() == 2) return foundNumbers.get(0).value * foundNumbers.get(1).value;
+        if((long) foundNumbers.size() == 2) return foundNumbers.get(0).value * foundNumbers.get(1).value;
 
         return 0;
     }

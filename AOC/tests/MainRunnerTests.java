@@ -14,35 +14,35 @@ public class MainRunnerTests {
     }
 
     //region Day1
-    @Test
+    @Theory
     public void Day1Part1() {
 
-        int actual = Day1.Part1.Run();
+        int actual = Day1.Part1.Run(false);
 
         Assertions.assertEquals(53651, actual);
     }
-    @Test
-    public void Day1Part2() {
+    @Theory
+    public void Day1Part2(@FromDataPoints("example") boolean example) {
 
-        int actual = Day1.Part2.Run();
+        int actual = Day1.Part2.Run(example);
 
-        Assertions.assertEquals(53894, actual);
+        Assertions.assertEquals(example ? 281:53894, actual);
     }
     //endregion
     //region Day2
-    @Test
-    public void Day2Part1() {
+    @Theory
+    public void Day2Part1(@FromDataPoints("example") boolean example) {
 
-        int actual = Day2.Part1.Run();
+        int actual = Day2.Part1.Run(example);
 
-        Assertions.assertEquals(2207, actual);
+        Assertions.assertEquals(example ? 8:2207, actual);
     }
-    @Test
-    public void Day2Part2() {
+    @Theory
+    public void Day2Part2(@FromDataPoints("example") boolean example) {
 
-        int actual = Day2.Part2.Run();
+        int actual = Day2.Part2.Run(example);
 
-        Assertions.assertEquals(62241, actual);
+        Assertions.assertEquals(example ? 2286:62241, actual);
     }
     //endregion
     //region Day3

@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.lang.Integer.parseInt;
 
 public class Part2 extends AdventBase {
-    public static int Run() {
-        Start(1,2);
+    public static int Run(boolean example) {
+        Start(1,2, example);
 
-        List<String> input = LoadInput(1, false);
+        List<String> input = LoadInput(1, example);
         List<List<Integer>> nums = new ArrayList<>();
 
 

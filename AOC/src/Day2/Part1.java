@@ -7,10 +7,10 @@ import java.util.List;
 import static java.lang.Integer.parseInt;
 
 public class Part1 extends AdventBase {
-    public static int Run() {
-        Start(2,1);
+    public static int Run(boolean example) {
+        Start(2,1, example);
 
-        List<String> input = LoadInput(2,false);
+        List<String> input = LoadInput(2,example);
 
         int maxRed = 12;
         int maxGreen = 13;

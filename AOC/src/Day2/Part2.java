@@ -7,10 +7,10 @@ import java.util.List;
 import static java.lang.Integer.parseInt;
 
 public class Part2 extends AdventBase {
-    public static int Run() {
-        Start(2,2);
+    public static int Run(boolean example) {
+        Start(2,2, example);
 
-        List<String> input = LoadInput(2,false);
+        List<String> input = LoadInput(2,example);
 
         int result = 0;
 
