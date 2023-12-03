@@ -9,7 +9,7 @@ import static java.lang.Integer.parseInt;
 
 public class Part1 extends AdventBase {
     public static int Run(boolean example) {
-        Start(3,1);
+        Start(3,1, example);
 
         List<String> input = LoadInput(3,example);
 
@@ -29,20 +29,11 @@ public class Part1 extends AdventBase {
 
         int result = 0;
         for(Number number: numbers) {
-            if(IsPartNumber(number,symbols)) result += number.value;
+            if(number.IsPartNumber(symbols)) result += number.value;
         }
 
 
         return result;
-    }
-
-    private static boolean IsPartNumber(Number number, List<Symbol> symbols) {
-        int rangeX1 = number.x-1;
-        int rangeX2 = number.x+ number.length;
-        int rangeY1 = number.y-1;
-        int rangeY2 = number.y+1;
-
-        return symbols.stream().anyMatch(s -> s.x >= rangeX1 && s.x <= rangeX2 && s.y >= rangeY1 && s.y <= rangeY2);
     }
 
     private static List<Symbol> FindSymbols(String line, int yIndex) {
@@ -98,6 +89,15 @@ class Number extends Symbol {
     }
     public int value;
     public int length;
+
+    public boolean IsPartNumber(List<Symbol> symbols) {
+        int rangeX1 = this.x-1;
+        int rangeX2 = this.x+ this.length;
+        int rangeY1 = this.y-1;
+        int rangeY2 = this.y+1;
+
+        return symbols.stream().anyMatch(s -> s.x >= rangeX1 && s.x <= rangeX2 && s.y >= rangeY1 && s.y <= rangeY2);
+    }
 }
 
 class Symbol {
