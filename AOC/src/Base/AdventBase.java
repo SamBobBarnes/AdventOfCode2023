@@ -15,6 +15,10 @@ public class AdventBase {
     {
         System.out.println(MessageFormat.format("Day {0}, Part {1}",day,part));
     }
+    protected static void Start(int day, int part, boolean example)
+    {
+        System.out.println(MessageFormat.format("Day {0}, Part {1} {2}",day,part,example ? "example" : ""));
+    }
 
     protected static List<String> LoadInput(int day) {
         return LoadInput(day, false);

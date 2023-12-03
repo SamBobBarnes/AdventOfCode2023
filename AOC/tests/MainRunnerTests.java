@@ -56,9 +56,9 @@ public class MainRunnerTests {
     @Theory
     public void Day3Part2(@FromDataPoints("example") boolean example) {
 
-        int actual = Day3.Part2.Run();
+        int actual = Day3.Part2.Run(example);
 
-        Assertions.assertEquals(0, actual);
+        Assertions.assertEquals(example ? 467835:84495585, actual);
     }
     //endregion
 }

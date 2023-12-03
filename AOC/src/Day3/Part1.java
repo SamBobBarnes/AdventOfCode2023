@@ -13,9 +13,6 @@ public class Part1 extends AdventBase {
 
         List<String> input = LoadInput(3,example);
 
-        String symbolRegex = "[^0-9.]+";
-        String numberRegex = "[0-9]+";
-
         List<Number> numbers = new ArrayList<>();
         List<Symbol> symbols = new ArrayList<>();
 
@@ -29,7 +26,7 @@ public class Part1 extends AdventBase {
 
         int result = 0;
         for(Number number: numbers) {
-            if(number.IsPartNumber(symbols)) result += number.value;
+            if(number.IsTouchingSymbol(symbols)) result += number.value;
         }
 
 
@@ -90,7 +87,7 @@ class Number extends Symbol {
     public int value;
     public int length;
 
-    public boolean IsPartNumber(List<Symbol> symbols) {
+    public boolean IsTouchingSymbol(List<Symbol> symbols) {
         int rangeX1 = this.x-1;
         int rangeX2 = this.x+ this.length;
         int rangeY1 = this.y-1;
