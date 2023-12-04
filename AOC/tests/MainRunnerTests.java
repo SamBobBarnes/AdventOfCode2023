@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 public class MainRunnerTests {
     @DataPoints("example")
     public static boolean[] example() {
-        return new boolean[]{true,false};
+        return new boolean[]{true, false};
     }
 
     //region Day1
@@ -21,13 +21,15 @@ public class MainRunnerTests {
 
         Assertions.assertEquals(53651, actual);
     }
+
     @Theory
     public void Day1Part2(@FromDataPoints("example") boolean example) {
 
         int actual = Day1.Part2.Run(example);
 
-        Assertions.assertEquals(example ? 281:53894, actual);
+        Assertions.assertEquals(example ? 281 : 53894, actual);
     }
+
     //endregion
     //region Day2
     @Theory
@@ -35,15 +37,17 @@ public class MainRunnerTests {
 
         int actual = Day2.Part1.Run(example);
 
-        Assertions.assertEquals(example ? 8:2207, actual);
+        Assertions.assertEquals(example ? 8 : 2207, actual);
     }
+
     @Theory
     public void Day2Part2(@FromDataPoints("example") boolean example) {
 
         int actual = Day2.Part2.Run(example);
 
-        Assertions.assertEquals(example ? 2286:62241, actual);
+        Assertions.assertEquals(example ? 2286 : 62241, actual);
     }
+
     //endregion
     //region Day3
     @Theory
@@ -51,14 +55,31 @@ public class MainRunnerTests {
 
         int actual = Day3.Part1.Run(example);
 
-        Assertions.assertEquals(example ? 4361:544664, actual);
+        Assertions.assertEquals(example ? 4361 : 544664, actual);
     }
+
     @Theory
     public void Day3Part2(@FromDataPoints("example") boolean example) {
 
         int actual = Day3.Part2.Run(example);
 
-        Assertions.assertEquals(example ? 467835:84495585, actual);
+        Assertions.assertEquals(example ? 467835 : 84495585, actual);
+    }
+    //endregion
+    //region Day4
+    @Theory
+    public void Day4Part1(@FromDataPoints("example") boolean example) {
+
+        int actual = Day4.Part1.Run(example);
+
+        Assertions.assertEquals(example ? 0:0, actual);
+    }
+    @Theory
+    public void Day4Part2(@FromDataPoints("example") boolean example) {
+
+        int actual = Day4.Part2.Run(example);
+
+        Assertions.assertEquals(example ? 0:0, actual);
     }
     //endregion
 }
