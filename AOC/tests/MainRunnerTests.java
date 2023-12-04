@@ -3,7 +3,6 @@ import org.junit.experimental.theories.FromDataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Theories.class)
@@ -72,14 +71,14 @@ public class MainRunnerTests {
 
         int actual = Day4.Part1.Run(example);
 
-        Assertions.assertEquals(example ? 0:0, actual);
+        Assertions.assertEquals(example ? 13:25004, actual);
     }
     @Theory
     public void Day4Part2(@FromDataPoints("example") boolean example) {
 
         int actual = Day4.Part2.Run(example);
 
-        Assertions.assertEquals(example ? 0:0, actual);
+        Assertions.assertEquals(example ? 30:14427616, actual);
     }
     //endregion
 }
