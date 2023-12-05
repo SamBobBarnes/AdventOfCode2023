@@ -155,6 +155,7 @@ class ConversionRange {
         var destinationRanges = new ArrayList<Range>();
 
         while(!tempRanges.isEmpty()) {
+            var outside = false;
             var tempSource = tempRanges.getFirst();
             for(int i = 0; i < this.source.size(); i++) {
                 var conversionSource = this.source.get(i);
@@ -167,24 +168,30 @@ class ConversionRange {
                     break;
                 }
                 //start matches
-                else if(tempSource.start >= conversionSource) {
+                else if(tempSource.start >= conversionSource && tempSource.start <= conversionSourceEnd) {
                     sourceRanges.add(new Range(source.start, conversionSourceEnd - tempSource.start + 1));
                     tempRanges.add(new Range(conversionSourceEnd + 1,tempSource.end - conversionSourceEnd));
                     tempRanges.remove(tempSource);
                     break;
                 }
                 //end matches
-                else if (tempSource.end >= conversionSource){
+                else if(tempSource.end >= conversionSource && tempSource.end <= conversionSourceEnd){
                     sourceRanges.add(new Range(conversionSource, tempSource.end - conversionSource + 1));
                     tempRanges.add(new Range(tempSource.start, conversionSource - tempSource.start));
                     tempRanges.remove(tempSource);
                     break;
                 }
                 //else outside
+                else {
+                    if(i == this.source.size()-1)
+                        outside = true;
+                }
+            }
+            if(outside) {
+                sourceRanges.add(tempSource);
+                tempRanges.remove(tempSource);
             }
 
-            sourceRanges.add(tempSource);
-            tempRanges.remove(tempSource);
         }
 
         for(var range: sourceRanges) {
