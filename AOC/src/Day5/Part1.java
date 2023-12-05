@@ -5,15 +5,43 @@ import Base.AdventBase;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Integer.parseInt;
-
 public class Part1 extends AdventBase {
-    public static int Run(boolean example) {
+    public static long Run(boolean example) {
         Start(5, 1, example);
 
         List<String> input = LoadInput(5, example);
 
-        return 0;
+        var seeds = input.get(0).substring(input.get(0).indexOf(':') + 2).split(" ");
+
+        input.removeFirst();
+        input.removeFirst();
+
+        var ranges = new ArrayList<ConversionRange>();
+
+        var conversionTable = new ArrayList<String>();
+        while(!input.isEmpty()) {
+            if(!input.get(0).isEmpty()) {
+                conversionTable.add(input.get(0));
+            }
+            else {
+                ranges.add(GetRanges(conversionTable));
+                conversionTable = new ArrayList<>();
+            }
+            input.removeFirst();
+        }
+        ranges.add(GetRanges(conversionTable));
+
+        long min = -1;
+
+        for(var seed: seeds) {
+            if(min < 0) min = GetLocation(Long.parseLong(seed), ranges);
+            else {
+                var location = GetLocation(Long.parseLong(seed), ranges);
+                if (location < min) min = location;
+            }
+        }
+
+        return min;
     }
 
     private static ConversionRange GetRanges(List<String> conversionTable) {
@@ -26,11 +54,21 @@ public class Part1 extends AdventBase {
 
         for(var line: conversionTable) {
             var nums = line.split(" ");
-            range.AddConversion(parseInt(nums[1]),parseInt(nums[0]),parseInt(nums[2]));
+            range.AddConversion(Long.parseLong(nums[1]),Long.parseLong(nums[0]),Long.parseLong(nums[2]));
         }
 
 
         return range;
+    }
+
+    private static long GetLocation(Long seed, List<ConversionRange> conversions) {
+        var soil = conversions.get(0).Convert(seed);
+        var fertilizer = conversions.get(1).Convert(soil);
+        var water = conversions.get(2).Convert(fertilizer);
+        var light = conversions.get(3).Convert(water);
+        var temp = conversions.get(4).Convert(light);
+        var humidity = conversions.get(5).Convert(temp);
+        return conversions.get(6).Convert(humidity);
     }
 }
 
@@ -42,15 +80,24 @@ class ConversionRange {
         this.destination = new ArrayList<>();
         this.range = new ArrayList<>();
     }
-    public List<Integer> source;
-    public List<Integer> destination;
-    public List<Integer> range;
+    public List<Long> source;
+    public List<Long> destination;
+    public List<Long> range;
     public String destinationType;
     public String sourceType;
 
-    public void AddConversion(int source, int destination, int range) {
+    public void AddConversion(Long source, Long destination, Long range) {
         this.source.add(source);
         this.destination.add(destination);
         this.range.add(range);
+    }
+
+    public Long Convert(Long source) {
+        for(int i = 0; i < this.source.size(); i++) {
+            if(source >= this.source.get(i) && source <= this.source.get(i) + this.range.get(i)) {
+                return this.destination.get(i) + (source - this.source.get(i));
+            }
+        }
+        return source;
     }
 }

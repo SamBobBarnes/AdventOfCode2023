@@ -5,6 +5,7 @@ import org.junit.experimental.theories.Theory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 
+
 @RunWith(Theories.class)
 public class MainRunnerTests {
     @DataPoints("example")
@@ -85,16 +86,16 @@ public class MainRunnerTests {
     @Theory
     public void Day5Part1(@FromDataPoints("example") boolean example) {
 
-        int actual = Day5.Part1.Run(example);
+        var actual = Day5.Part1.Run(example);
 
-        Assertions.assertEquals(example ? 0:0, actual);
+        Assertions.assertEquals(example ? 35:261668924, actual);
     }
     @Theory
     public void Day5Part2(@FromDataPoints("example") boolean example) {
 
-        int actual = Day5.Part2.Run(example);
+        var actual = Day5.Part2.Run(example);
 
-        Assertions.assertEquals(example ? 0:0, actual);
+        Assertions.assertEquals(example ? 46:0, actual);
     }
     //endregion
 }
