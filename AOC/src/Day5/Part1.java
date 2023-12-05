@@ -71,33 +71,3 @@ public class Part1 extends AdventBase {
         return conversions.get(6).Convert(humidity);
     }
 }
-
-class ConversionRange {
-    public ConversionRange(String sourceType, String destinationType) {
-        this.sourceType = sourceType;
-        this.destinationType = destinationType;
-        this.source = new ArrayList<>();
-        this.destination = new ArrayList<>();
-        this.range = new ArrayList<>();
-    }
-    public List<Long> source;
-    public List<Long> destination;
-    public List<Long> range;
-    public String destinationType;
-    public String sourceType;
-
-    public void AddConversion(Long source, Long destination, Long range) {
-        this.source.add(source);
-        this.destination.add(destination);
-        this.range.add(range);
-    }
-
-    public Long Convert(Long source) {
-        for(int i = 0; i < this.source.size(); i++) {
-            if(source >= this.source.get(i) && source <= this.source.get(i) + this.range.get(i)) {
-                return this.destination.get(i) + (source - this.source.get(i));
-            }
-        }
-        return source;
-    }
-}

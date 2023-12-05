@@ -3,9 +3,7 @@ package Day5;
 import Base.AdventBase;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Part2 extends AdventBase {
     public static Long Run(boolean example) {
@@ -18,17 +16,17 @@ public class Part2 extends AdventBase {
         input.removeFirst();
         input.removeFirst();
 
-        List<Long> seeds = new ArrayList<>();
+        //region Seeds
+        List<Range> seeds = new ArrayList<>();
 
         for(int i = 0; i < seedStrings.length; i += 2) {
             var seed = Long.parseLong(seedStrings[i]);
             var range = Long.parseLong(seedStrings[i+1]);
-            for(long j = 0; j < range; j++) {
-                seeds.add(seed + j);
-            }
-            seeds = PruneList(seeds);
+            seeds.add(new Range(seed,range));
         }
+        //endregion
 
+        //region ConversionRanges
         var ranges = new ArrayList<ConversionRange>();
 
         var conversionTable = new ArrayList<String>();
@@ -43,24 +41,13 @@ public class Part2 extends AdventBase {
             input.removeFirst();
         }
         ranges.add(GetRanges(conversionTable));
+        //endregion
 
-        long min = -1;
+        var locations = GetLocations(seeds,ranges);
 
-        for(var seed: seeds) {
-            if(min < 0) min = GetLocation(seed, ranges);
-            else {
-                var location = GetLocation(seed, ranges);
-                if (location < min) min = location;
-            }
-        }
+        long min = locations.stream().mapToLong(x -> x.start).min().getAsLong();
 
         return min;
-    }
-
-    private static List<Long> PruneList(List<Long> numbers)
-    {
-        Set<Long> set = new HashSet<>(numbers);
-        return new ArrayList<>(set);
     }
 
     private static ConversionRange GetRanges(List<String> conversionTable) {
@@ -72,21 +59,138 @@ public class Part2 extends AdventBase {
         conversionTable.remove(0);
 
         for(var line: conversionTable) {
-            var nums = line.split(" ");
-            range.AddConversion(Long.parseLong(nums[1]),Long.parseLong(nums[0]),Long.parseLong(nums[2]));
+            var numbers = line.split(" ");
+            range.AddConversion(Long.parseLong(numbers[1]),Long.parseLong(numbers[0]),Long.parseLong(numbers[2]));
         }
 
 
         return range;
     }
 
-    private static long GetLocation(Long seed, List<ConversionRange> conversions) {
-        var soil = conversions.get(0).Convert(seed);
-        var fertilizer = conversions.get(1).Convert(soil);
-        var water = conversions.get(2).Convert(fertilizer);
-        var light = conversions.get(3).Convert(water);
-        var temp = conversions.get(4).Convert(light);
-        var humidity = conversions.get(5).Convert(temp);
-        return conversions.get(6).Convert(humidity);
+    private static List<Range> GetLocations(List<Range> seeds, List<ConversionRange> conversions) {
+        var soil = new ArrayList<Range>();
+        for(var range: seeds) {
+            soil.addAll(conversions.get(0).ConvertRange(range));
+        }
+
+        var fertilizer = new ArrayList<Range>();
+        for(var range: soil) {
+            fertilizer.addAll(conversions.get(1).ConvertRange(range));
+        }
+
+        var water = new ArrayList<Range>();
+        for(var range: fertilizer) {
+            water.addAll(conversions.get(2).ConvertRange(range));
+        }
+
+        var light = new ArrayList<Range>();
+        for(var range: water) {
+            light.addAll(conversions.get(3).ConvertRange(range));
+        }
+
+        var temp = new ArrayList<Range>();
+        for(var range: light) {
+            temp.addAll(conversions.get(4).ConvertRange(range));
+        }
+
+        var humidity = new ArrayList<Range>();
+        for(var range: temp) {
+            humidity.addAll(conversions.get(5).ConvertRange(range));
+        }
+
+        var location = new ArrayList<Range>();
+        for(var range: humidity) {
+            location.addAll(conversions.get(6).ConvertRange(range));
+        }
+
+        return location;
+    }
+}
+
+class Range {
+    public Range(long start, long range) {
+        this.start = start;
+        this.range = range;
+        this.end = start + range -1;
+    }
+    public long start;
+    public long range;
+    public long end;
+}
+
+class ConversionRange {
+    public ConversionRange(String sourceType, String destinationType) {
+        this.sourceType = sourceType;
+        this.destinationType = destinationType;
+        this.source = new ArrayList<>();
+        this.destination = new ArrayList<>();
+        this.range = new ArrayList<>();
+    }
+    public List<Long> source;
+    public List<Long> destination;
+    public List<Long> range;
+    public String destinationType;
+    public String sourceType;
+
+    public void AddConversion(Long source, Long destination, Long range) {
+        this.source.add(source);
+        this.destination.add(destination);
+        this.range.add(range);
+    }
+
+    public Long Convert(Long source) {
+        for(int i = 0; i < this.source.size(); i++) {
+            if(source >= this.source.get(i) && source <= this.source.get(i) + this.range.get(i)) {
+                return this.destination.get(i) + (source - this.source.get(i));
+            }
+        }
+        return source;
+    }
+
+    public List<Range> ConvertRange(Range source) {
+        var tempRanges = new ArrayList<Range>();
+        tempRanges.add(source);
+
+        var sourceRanges = new ArrayList<Range>();
+        var destinationRanges = new ArrayList<Range>();
+
+        while(!tempRanges.isEmpty()) {
+            var tempSource = tempRanges.getFirst();
+            for(int i = 0; i < this.source.size(); i++) {
+                var conversionSource = this.source.get(i);
+                var conversionSourceEnd = conversionSource + this.range.get(i)-1;
+                //full match
+                if(tempSource.start >= conversionSource
+                        && tempSource.end <= conversionSourceEnd) {
+                    sourceRanges.add(tempSource);
+                    tempRanges.remove(tempSource);
+                    break;
+                }
+                //start matches
+                else if(tempSource.start >= conversionSource) {
+                    sourceRanges.add(new Range(source.start, conversionSourceEnd - tempSource.start + 1));
+                    tempRanges.add(new Range(conversionSourceEnd + 1,tempSource.end - conversionSourceEnd));
+                    tempRanges.remove(tempSource);
+                    break;
+                }
+                //end matches
+                else if (tempSource.end >= conversionSource){
+                    sourceRanges.add(new Range(conversionSource, tempSource.end - conversionSource + 1));
+                    tempRanges.add(new Range(tempSource.start, conversionSource - tempSource.start));
+                    tempRanges.remove(tempSource);
+                    break;
+                }
+                //else outside
+            }
+
+            sourceRanges.add(tempSource);
+            tempRanges.remove(tempSource);
+        }
+
+        for(var range: sourceRanges) {
+            destinationRanges.add(new Range(this.Convert(range.start),range.range));
+        }
+
+        return destinationRanges;
     }
 }
