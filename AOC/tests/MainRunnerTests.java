@@ -104,14 +104,14 @@ public class MainRunnerTests {
 
         var actual = Day6.Part1.Run(example);
 
-        Assertions.assertEquals(example ? 0:0, actual);
+        Assertions.assertEquals(example ? 288:281600, actual);
     }
     @Theory
     public void Day6Part2(@FromDataPoints("example") boolean example) {
 
         var actual = Day6.Part2.Run(example);
 
-        Assertions.assertEquals(example ? 0:0, actual);
+        Assertions.assertEquals(example ? 71503:33875953, actual);
     }
     //endregion
 }
