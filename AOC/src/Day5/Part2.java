@@ -116,6 +116,10 @@ class Range {
     public long start;
     public long range;
     public long end;
+
+    public String toString() {
+        return start + "-" + end;
+    }
 }
 
 class ConversionRange {
@@ -194,9 +198,13 @@ class ConversionRange {
 
         }
 
+        System.out.print(source.toString() + " became ");
         for(var range: sourceRanges) {
-            destinationRanges.add(new Range(this.Convert(range.start),range.range));
+            var newRange = new Range(this.Convert(range.start),range.range);
+            destinationRanges.add(newRange);
+            System.out.print(newRange.toString() + ", ");
         }
+        System.out.println();
 
         return destinationRanges;
     }
