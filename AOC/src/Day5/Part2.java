@@ -68,36 +68,43 @@ public class Part2 extends AdventBase {
     }
 
     private static List<Range> GetLocations(List<Range> seeds, List<ConversionRange> conversions) {
+        // System.out.println("Soil:");
         var soil = new ArrayList<Range>();
         for(var range: seeds) {
             soil.addAll(conversions.get(0).ConvertRange(range));
         }
 
+        // System.out.println("Fertilizer:");
         var fertilizer = new ArrayList<Range>();
         for(var range: soil) {
             fertilizer.addAll(conversions.get(1).ConvertRange(range));
         }
 
+        // System.out.println("Water:");
         var water = new ArrayList<Range>();
         for(var range: fertilizer) {
             water.addAll(conversions.get(2).ConvertRange(range));
         }
 
+        // System.out.println("Light:");
         var light = new ArrayList<Range>();
         for(var range: water) {
             light.addAll(conversions.get(3).ConvertRange(range));
         }
 
+        // System.out.println("Temp:");
         var temp = new ArrayList<Range>();
         for(var range: light) {
             temp.addAll(conversions.get(4).ConvertRange(range));
         }
 
+        // System.out.println("Humidity:");
         var humidity = new ArrayList<Range>();
         for(var range: temp) {
             humidity.addAll(conversions.get(5).ConvertRange(range));
         }
 
+        // System.out.println("Location:");
         var location = new ArrayList<Range>();
         for(var range: humidity) {
             location.addAll(conversions.get(6).ConvertRange(range));
@@ -198,13 +205,13 @@ class ConversionRange {
 
         }
 
-        System.out.print(source.toString() + " became ");
+        // System.out.print(source.toString() + " became ");
         for(var range: sourceRanges) {
             var newRange = new Range(this.Convert(range.start),range.range);
             destinationRanges.add(newRange);
-            System.out.print(newRange.toString() + ", ");
+            // System.out.print(newRange.toString() + ", ");
         }
-        System.out.println();
+        // System.out.println();
 
         return destinationRanges;
     }
