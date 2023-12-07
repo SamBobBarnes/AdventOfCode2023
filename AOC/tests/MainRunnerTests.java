@@ -120,7 +120,7 @@ public class MainRunnerTests {
 
         var actual = Day7.Part1.Run(example);
 
-        Assertions.assertEquals(example ? 0:0, actual);
+        Assertions.assertEquals(example ? 6440:246424613, actual);
     }
     @Theory
     public void Day7Part2(@FromDataPoints("example") boolean example) {
