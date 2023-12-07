@@ -43,6 +43,11 @@ public class Part2 extends AdventBase {
         ranges.add(GetRanges(conversionTable));
         //endregion
 
+        var overlap = false;
+        for(var range: ranges) {
+            if(range.CheckForOverlap()) overlap = true;
+        }
+
         var locations = GetLocations(seeds,ranges);
 
         long min = locations.stream().mapToLong(x -> x.start).min().getAsLong();
@@ -149,6 +154,21 @@ class ConversionRange {
         this.range.add(range);
     }
 
+    public boolean CheckForOverlap() {
+        for(int i = 0; i < source.size(); i++) {
+            for(int j = 0; j < source.size(); j++) {
+                if(i == j) continue;
+                var start1 = source.get(i);
+                var end1 = source.get(i) + range.get(i) - 1;
+                var start2 = source.get(j);
+                var end2 = source.get(j) + range.get(j) - 1;
+
+                if(start2 >= start1 && start2 <= end1 || end2 >= start1 && end2 <= end1) return true;
+            }
+        }
+        return false;
+    }
+
     public Long Convert(Long source) {
         for(int i = 0; i < this.source.size(); i++) {
             if(source >= this.source.get(i) && source <= this.source.get(i) + this.range.get(i)) {
@@ -166,43 +186,46 @@ class ConversionRange {
         var destinationRanges = new ArrayList<Range>();
 
         while(!tempRanges.isEmpty()) {
-            var outside = false;
+            var outside = 0;
             var tempSource = tempRanges.getFirst();
             for(int i = 0; i < this.source.size(); i++) {
                 var conversionSource = this.source.get(i);
                 var conversionSourceEnd = conversionSource + this.range.get(i)-1;
-                //full match
-                if(tempSource.start >= conversionSource
+                //outside
+                if(tempSource.start < conversionSource && tempSource.end < conversionSource
+                        || tempSource.start > conversionSourceEnd && tempSource.end > conversionSourceEnd) {
+                    outside++;
+                }
+                else if(tempSource.start < conversionSource && tempSource.end > conversionSourceEnd) {
+                    tempRanges.add(new Range(tempSource.start,conversionSource - tempSource.start));
+                    tempRanges.add(new Range(conversionSourceEnd+1,tempSource.end - conversionSourceEnd));
+                    sourceRanges.add(new Range(conversionSource,this.range.get(i)));
+                    break;
+                }
+                //inside
+                else if(tempSource.start >= conversionSource
                         && tempSource.end <= conversionSourceEnd) {
                     sourceRanges.add(tempSource);
-                    tempRanges.remove(tempSource);
                     break;
                 }
-                //start matches
-                else if(tempSource.start >= conversionSource && tempSource.start <= conversionSourceEnd) {
+                //start overlaps
+                else if(tempSource.start >= conversionSource && tempSource.start <= conversionSourceEnd && tempSource.end > conversionSourceEnd) {
                     sourceRanges.add(new Range(source.start, conversionSourceEnd - tempSource.start + 1));
                     tempRanges.add(new Range(conversionSourceEnd + 1,tempSource.end - conversionSourceEnd));
-                    tempRanges.remove(tempSource);
                     break;
                 }
-                //end matches
-                else if(tempSource.end >= conversionSource && tempSource.end <= conversionSourceEnd){
+                //end overlaps
+                else if(tempSource.end >= conversionSource && tempSource.end <= conversionSourceEnd && tempSource.start < conversionSource){
                     sourceRanges.add(new Range(conversionSource, tempSource.end - conversionSource + 1));
                     tempRanges.add(new Range(tempSource.start, conversionSource - tempSource.start));
-                    tempRanges.remove(tempSource);
                     break;
                 }
-                //else outside
-                else {
-                    if(i == this.source.size()-1)
-                        outside = true;
-                }
             }
-            if(outside) {
+            if(outside == this.source.size()) {
                 sourceRanges.add(tempSource);
-                tempRanges.remove(tempSource);
             }
 
+            tempRanges.remove(tempSource);
         }
 
         // System.out.print(source.toString() + " became ");
