@@ -95,7 +95,7 @@ public class MainRunnerTests {
 
         var actual = Day5.Part2.Run(example);
 
-        Assertions.assertEquals(example ? 46:0, actual);
+        Assertions.assertEquals(example ? 46:24261545, actual);
     }
     //endregion
     //region Day6

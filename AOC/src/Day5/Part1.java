@@ -16,7 +16,7 @@ public class Part1 extends AdventBase {
         input.removeFirst();
         input.removeFirst();
 
-        var ranges = new ArrayList<ConversionRange>();
+        var ranges = new ArrayList<Conversion>();
 
         var conversionTable = new ArrayList<String>();
         while(!input.isEmpty()) {
@@ -44,11 +44,11 @@ public class Part1 extends AdventBase {
         return min;
     }
 
-    private static ConversionRange GetRanges(List<String> conversionTable) {
+    private static Conversion GetRanges(List<String> conversionTable) {
         var source = conversionTable.get(0).split(" ")[0].split("-")[0];
         var destination = conversionTable.get(0).split(" ")[0].split("-")[2];
 
-        var range = new ConversionRange(source, destination);
+        var range = new Conversion(source, destination);
 
         conversionTable.remove(0);
 
@@ -61,7 +61,7 @@ public class Part1 extends AdventBase {
         return range;
     }
 
-    private static long GetLocation(Long seed, List<ConversionRange> conversions) {
+    private static long GetLocation(Long seed, List<Conversion> conversions) {
         var soil = conversions.get(0).Convert(seed);
         var fertilizer = conversions.get(1).Convert(soil);
         var water = conversions.get(2).Convert(fertilizer);

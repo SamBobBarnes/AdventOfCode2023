@@ -11,7 +11,7 @@ public class Part2 extends AdventBase {
 
         List<String> input = LoadInput(5, example);
 
-        var seedStrings = input.get(0).substring(input.get(0).indexOf(':') + 2).split(" ");
+        var seedStrings = input.getFirst().substring(input.getFirst().indexOf(':') + 2).split(" ");
 
         input.removeFirst();
         input.removeFirst();
@@ -27,7 +27,7 @@ public class Part2 extends AdventBase {
         //endregion
 
         //region ConversionRanges
-        var ranges = new ArrayList<ConversionRange>();
+        var ranges = new ArrayList<Conversion>();
 
         var conversionTable = new ArrayList<String>();
         while(!input.isEmpty()) {
@@ -55,11 +55,11 @@ public class Part2 extends AdventBase {
         return min;
     }
 
-    private static ConversionRange GetRanges(List<String> conversionTable) {
+    private static Conversion GetRanges(List<String> conversionTable) {
         var source = conversionTable.get(0).split(" ")[0].split("-")[0];
         var destination = conversionTable.get(0).split(" ")[0].split("-")[2];
 
-        var range = new ConversionRange(source, destination);
+        var range = new Conversion(source, destination);
 
         conversionTable.remove(0);
 
@@ -72,7 +72,7 @@ public class Part2 extends AdventBase {
         return range;
     }
 
-    private static List<Range> GetLocations(List<Range> seeds, List<ConversionRange> conversions) {
+    private static List<Range> GetLocations(List<Range> seeds, List<Conversion> conversions) {
         // System.out.println("Soil:");
         var soil = new ArrayList<Range>();
         for(var range: seeds) {
@@ -123,7 +123,7 @@ class Range {
     public Range(long start, long range) {
         this.start = start;
         this.range = range;
-        this.end = start + range -1;
+        this.end = start + range - 1;
     }
     public long start;
     public long range;
@@ -134,34 +134,39 @@ class Range {
     }
 }
 
-class ConversionRange {
-    public ConversionRange(String sourceType, String destinationType) {
+class ConversionRange extends Range {
+    public ConversionRange(long start, long range, long destination) {
+        super(start, range);
+        this.destinationStart = destination;
+        this.destinationEnd = destination + range - 1;
+    }
+    public long destinationStart;
+    public long destinationEnd;
+}
+
+class Conversion {
+    public Conversion(String sourceType, String destinationType) {
         this.sourceType = sourceType;
         this.destinationType = destinationType;
-        this.source = new ArrayList<>();
-        this.destination = new ArrayList<>();
-        this.range = new ArrayList<>();
+        this.ranges = new ArrayList<>();
     }
-    public List<Long> source;
-    public List<Long> destination;
-    public List<Long> range;
+
+    public List<ConversionRange> ranges;
     public String destinationType;
     public String sourceType;
 
     public void AddConversion(Long source, Long destination, Long range) {
-        this.source.add(source);
-        this.destination.add(destination);
-        this.range.add(range);
+        this.ranges.add(new ConversionRange(source,range,destination));
     }
 
     public boolean CheckForOverlap() {
-        for(int i = 0; i < source.size(); i++) {
-            for(int j = 0; j < source.size(); j++) {
+        for(int i = 0; i < ranges.size(); i++) {
+            for(int j = 0; j < ranges.size(); j++) {
                 if(i == j) continue;
-                var start1 = source.get(i);
-                var end1 = source.get(i) + range.get(i) - 1;
-                var start2 = source.get(j);
-                var end2 = source.get(j) + range.get(j) - 1;
+                var start1 = ranges.get(i).start;
+                var end1 = ranges.get(i).end - 1;
+                var start2 = ranges.get(j).start;
+                var end2 = ranges.get(j).end;
 
                 if(start2 >= start1 && start2 <= end1 || end2 >= start1 && end2 <= end1) return true;
             }
@@ -170,9 +175,9 @@ class ConversionRange {
     }
 
     public Long Convert(Long source) {
-        for(int i = 0; i < this.source.size(); i++) {
-            if(source >= this.source.get(i) && source <= this.source.get(i) + this.range.get(i)) {
-                return this.destination.get(i) + (source - this.source.get(i));
+        for(int i = 0; i < this.ranges.size(); i++) {
+            if(source >= this.ranges.get(i).start && source <= this.ranges.get(i).end) {
+                return this.ranges.get(i).destinationStart + (source - this.ranges.get(i).start);
             }
         }
         return source;
@@ -188,40 +193,38 @@ class ConversionRange {
         while(!tempRanges.isEmpty()) {
             var outside = 0;
             var tempSource = tempRanges.getFirst();
-            for(int i = 0; i < this.source.size(); i++) {
-                var conversionSource = this.source.get(i);
-                var conversionSourceEnd = conversionSource + this.range.get(i)-1;
+            for(int i = 0; i < this.ranges.size(); i++) {
                 //outside
-                if(tempSource.start < conversionSource && tempSource.end < conversionSource
-                        || tempSource.start > conversionSourceEnd && tempSource.end > conversionSourceEnd) {
+                if(tempSource.start < this.ranges.get(i).start && tempSource.end < this.ranges.get(i).start
+                        || tempSource.start > this.ranges.get(i).end && tempSource.end > this.ranges.get(i).end) {
                     outside++;
                 }
-                else if(tempSource.start < conversionSource && tempSource.end > conversionSourceEnd) {
-                    tempRanges.add(new Range(tempSource.start,conversionSource - tempSource.start));
-                    tempRanges.add(new Range(conversionSourceEnd+1,tempSource.end - conversionSourceEnd));
-                    sourceRanges.add(new Range(conversionSource,this.range.get(i)));
+                else if(tempSource.start < this.ranges.get(i).start && tempSource.end > this.ranges.get(i).end) {
+                    tempRanges.add(new Range(tempSource.start,this.ranges.get(i).start - tempSource.start));
+                    tempRanges.add(new Range(this.ranges.get(i).end+1,tempSource.end - this.ranges.get(i).end));
+                    sourceRanges.add(new Range(this.ranges.get(i).start,this.ranges.get(i).range));
                     break;
                 }
                 //inside
-                else if(tempSource.start >= conversionSource
-                        && tempSource.end <= conversionSourceEnd) {
+                else if(tempSource.start >= this.ranges.get(i).start
+                        && tempSource.end <= this.ranges.get(i).end) {
                     sourceRanges.add(tempSource);
                     break;
                 }
                 //start overlaps
-                else if(tempSource.start >= conversionSource && tempSource.start <= conversionSourceEnd && tempSource.end > conversionSourceEnd) {
-                    sourceRanges.add(new Range(source.start, conversionSourceEnd - tempSource.start + 1));
-                    tempRanges.add(new Range(conversionSourceEnd + 1,tempSource.end - conversionSourceEnd));
+                else if(tempSource.start >= this.ranges.get(i).start && tempSource.start <= this.ranges.get(i).end && tempSource.end > this.ranges.get(i).end) {
+                    sourceRanges.add(new Range(source.start, this.ranges.get(i).end - tempSource.start + 1));
+                    tempRanges.add(new Range(this.ranges.get(i).end + 1,tempSource.end - this.ranges.get(i).end));
                     break;
                 }
                 //end overlaps
-                else if(tempSource.end >= conversionSource && tempSource.end <= conversionSourceEnd && tempSource.start < conversionSource){
-                    sourceRanges.add(new Range(conversionSource, tempSource.end - conversionSource + 1));
-                    tempRanges.add(new Range(tempSource.start, conversionSource - tempSource.start));
+                else if(tempSource.end >= this.ranges.get(i).start && tempSource.end <= this.ranges.get(i).end && tempSource.start < this.ranges.get(i).start){
+                    sourceRanges.add(new Range(this.ranges.get(i).start, tempSource.end - this.ranges.get(i).start + 1));
+                    tempRanges.add(new Range(tempSource.start, this.ranges.get(i).start - tempSource.start));
                     break;
                 }
             }
-            if(outside == this.source.size()) {
+            if(outside == this.ranges.size()) {
                 sourceRanges.add(tempSource);
             }
 
