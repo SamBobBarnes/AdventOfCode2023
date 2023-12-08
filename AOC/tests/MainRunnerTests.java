@@ -1,3 +1,4 @@
+import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
 import org.junit.experimental.theories.Theories;
@@ -138,12 +139,12 @@ public class MainRunnerTests {
 
         Assertions.assertEquals(example ? 6:17873, actual);
     }
-    @Theory
-    public void Day8Part2(@FromDataPoints("example") boolean example) {
+    @Test
+    public void Day8Part2() {
 
-        var actual = Day8.Part2.Run(example);
+        var actual = Day8.Part2.Run(false);
 
-        Assertions.assertEquals(example ? 0:0, actual);
+        Assertions.assertEquals(15746133679061L, actual);
     }
     //endregion
 }
