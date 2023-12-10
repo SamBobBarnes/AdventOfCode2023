@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,23 +32,29 @@ public class AdventBase {
         return result;
     }
 
-    protected static char[] LoadInputChars(int day) {
+    protected static List<char[]> LoadInputChars(int day) {
         return LoadInputChars(day, false);
     }
 
-    protected static char[] LoadInputChars(int day, boolean example)
+    protected static List<char[]> LoadInputChars(int day, boolean example)
     {
         String examplePath = MessageFormat.format("{0}/input/Day{1}/ExampleInput.txt",projectPath,day);
         String path = MessageFormat.format("{0}/input/Day{1}/Input.txt",projectPath,day);
 
-        List<String> result;
+        List<String> stringResult;
         try (Stream<String> lines = Files.lines(Paths.get(example ? examplePath : path))) {
-            result = lines.collect(Collectors.toList());
+            stringResult = lines.toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return result.get(0).toCharArray();
+        List<char[]> result = new ArrayList<>();
+
+        for(var line: stringResult) {
+            result.add(line.toCharArray());
+        }
+
+        return result;
     }
 
     public static void WriteOutput(int day, String output) {
