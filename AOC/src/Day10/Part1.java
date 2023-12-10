@@ -37,7 +37,21 @@ public class Part1 extends AdventBase {
         assert start != null;
         start.FindStartNeighbors(pipes);
 
-        return 0;
+        var result = FindMiddle(start,true, start, false);
+
+        return result;
+    }
+
+    private static int FindMiddle(Pipe pipe1, boolean useNext1, Pipe pipe2, boolean useNext2) {
+        if(pipe1.equals(pipe2) && pipe1.angle != 'S') return 0;
+
+        var nextPipe1 = useNext1 ? pipe1.next : pipe1.previous;
+        var nextPipe2 = useNext2 ? pipe2.next : pipe2 .previous;
+
+        useNext1 = pipe1.equals(nextPipe1.previous);
+        useNext2 = pipe2.equals(nextPipe2.previous);
+
+        return FindMiddle(nextPipe1,useNext1,nextPipe2,useNext2) + 1;
     }
 }
 
