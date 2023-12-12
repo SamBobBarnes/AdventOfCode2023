@@ -3,8 +3,9 @@ package Day10;
 import Base.AdventBase;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Part2 extends AdventBase {
@@ -42,35 +43,98 @@ public class Part2 extends AdventBase {
         FindMiddle(start,true, start, false);
 
         AtomicInteger result = new AtomicInteger();
-        for(int j = 0; j < input.size(); j++) {
-            AtomicInteger crossedLines = new AtomicInteger();
-            for(int i = 0; i < input.getFirst().length; i++) {
-                int finalJ = j;
-                int finalI = i;
-                var pipe = pipes.stream().filter(p -> p.x == finalI && p.y == finalJ).findFirst();
+//        for(int j = 0; j < input.size(); j++) {
+//            AtomicInteger crossedLines = new AtomicInteger();
+//            for(int i = 0; i < input.getFirst().length; i++) {
+//                int finalJ = j;
+//                int finalI = i;
+//                var pipe = pipes.stream().filter(p -> p.x == finalI && p.y == finalJ).findFirst();
+//
+//                pipe.ifPresentOrElse(
+//                    p -> {
+//                        if(p.loop && (p.angle == '|' || p.angle == 'J' || p.angle == 'L' || p.angle == '7' || p.angle == 'F')) {
+//                            crossedLines.getAndIncrement();
+//                        }
+//                        else if(!p.loop) {
+//                            var dict = FindPipesToTheLeft(finalI,finalJ,pipes);
+//
+//                            if(dict.get("Vertical") % 2 == 1 && dict.get("Horizontal") == 0) {
+//                                result.getAndIncrement();
+//                            }
+//
+//
+//                        }
+//                    },
+//                    () -> {
+//                        if(crossedLines.get() % 2 == 1) result.getAndIncrement();
+//                    }
+//                );
+//            }
+//        }
 
-                // Check for vertical pipe then start counting. stop at second vertical pipe
+        var try1 = ShoeLace(start, true);
+        var try2 = ShoeLace(start, false);
 
-                pipe.ifPresentOrElse(
-                    p -> {
-                        if(p.loop && p.angle == '|') {
-                            crossedLines.getAndIncrement();
-                        }
-                        else if(p.loop && crossedLines.get() % 2 == 1) {
-                            crossedLines.getAndDecrement();
-                        }
-                        else if(crossedLines.get() % 2 == 1 && !p.loop) {
-                            result.getAndIncrement();
-                        }
-                    },
-                    () -> {
-                        if(crossedLines.get() % 2 == 1) result.getAndIncrement();
-                    }
-                );
+        return try1 > 0 ? try1 : try2;
+    }
+
+    private static int ShoeLace(Pipe start, boolean next) {
+        var verts = new ArrayList<Vert>();
+
+        verts.add(new Vert(start.x,start.y));
+
+        var last = start;
+        var current = start.next;
+        if(!next) current = start.previous;
+
+        while(!current.equals(start)) {
+            verts.add(new Vert(current.x,current.y));
+            if(current.next.equals(last)) {
+                last = current;
+                current = current.previous;
+            }
+            else {
+                last = current;
+                current = current.next;
             }
         }
 
-        return result.get();
+        var loopArea = 0;
+
+        for(int i = 0; i < verts.size()-1; i++) {
+            loopArea += verts.get(i).X * verts.get(i+1).Y;
+            loopArea -= verts.get(i).Y * verts.get(i+1).X;
+        }
+
+        loopArea /= 2;
+
+        var result = Math.abs(loopArea) - (verts.size()/2) + 1;
+
+        return result;
+    }
+
+    private static Dictionary<String, Integer> FindPipesToTheLeft(int x, int y, List<Pipe> pipes) {
+        var dict =  new Hashtable<String, Integer>();
+        dict.put("Vertical", 0);
+        dict.put("Horizontal", 0);
+        var precedingPipes = new ArrayList<Pipe>();
+        for(int i = 0; i < x; i++) {
+            int finalI = i;
+            precedingPipes.add(pipes.stream().filter(p -> p.x == finalI && p.y == y).findFirst().get());
+        }
+
+        for(var pipe: precedingPipes) {
+            switch(pipe.angle) {
+                case '|', 'J', 'F', 'L', '7':
+                    dict.put("Vertical",dict.get("Vertical")+1);
+                    break;
+                case '-':
+                    dict.put("Horizontal",dict.get("Horizontal")+1);
+                    break;
+            }
+        }
+
+        return dict;
     }
 
     private static int FindMiddle(Pipe pipe1, boolean useNext1, Pipe pipe2, boolean useNext2) {
@@ -86,4 +150,13 @@ public class Part2 extends AdventBase {
 
         return FindMiddle(nextPipe1,useNext1,nextPipe2,useNext2) + 1;
     }
+}
+
+class Vert {
+    public Vert(int X, int Y) {
+        this.X = X;
+        this.Y = Y;
+    }
+    public int X;
+    public int Y;
 }
