@@ -21,7 +21,7 @@ public class Part2 extends AdventBase {
 
         for(var line: input) {
             for(var character: line) {
-                if(character != '.' && character != 'S') pipes.add(new Pipe(character,x,y));
+                if(character != 'S') pipes.add(new Pipe(character,x,y));
                 if(character == 'S') {
                     pipes.add(new Pipe(character, x, y));
                     start = pipes.getLast();
@@ -44,23 +44,27 @@ public class Part2 extends AdventBase {
         AtomicInteger result = new AtomicInteger();
         for(int j = 0; j < input.size(); j++) {
             AtomicInteger crossedLines = new AtomicInteger();
-            AtomicInteger tempCount = new AtomicInteger();
             for(int i = 0; i < input.getFirst().length; i++) {
                 int finalJ = j;
                 int finalI = i;
                 var pipe = pipes.stream().filter(p -> p.x == finalI && p.y == finalJ).findFirst();
 
+                // Check for vertical pipe then start counting. stop at second vertical pipe
+
                 pipe.ifPresentOrElse(
                     p -> {
-                        if(p.loop) {
+                        if(p.loop && p.angle == '|') {
                             crossedLines.getAndIncrement();
-                            result.set(result.get() + tempCount.get());
-                            tempCount.set(0);
                         }
-                        else if(crossedLines.get() % 2 == 1) tempCount.getAndIncrement();
+                        else if(p.loop && crossedLines.get() % 2 == 1) {
+                            crossedLines.getAndDecrement();
+                        }
+                        else if(crossedLines.get() % 2 == 1 && !p.loop) {
+                            result.getAndIncrement();
+                        }
                     },
                     () -> {
-                        if(crossedLines.get() % 2 == 1) tempCount.getAndIncrement();
+                        if(crossedLines.get() % 2 == 1) result.getAndIncrement();
                     }
                 );
             }
