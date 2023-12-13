@@ -1,13 +1,13 @@
 package Day11;
 
 class Vert {
-    public Vert(int x, int y) {
+    public Vert(long x, long y) {
         this.x = x;
         this.y = y;
     }
 
-    public int x;
-    public int y;
+    public long x;
+    public long y;
 }
 
 class VertPair {
@@ -19,7 +19,7 @@ class VertPair {
     public Vert a;
     public Vert b;
 
-    public int GetDistanceBetween() {
-        return Math.abs(a.x-b.x) + Math.abs(a.y- b.y);
+    public long GetDistanceBetween() {
+        return Math.abs(a.x-b.x) + Math.abs(a.y-b.y);
     }
 }

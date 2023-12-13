@@ -6,69 +6,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Part2 extends AdventBase {
-    public static int Run(boolean example) {
+    public static long Run(boolean example) {
         Start(11, 2, example);
 
-        var expandBy = example ? 100 : 1000000;
+        var expandBy = example ? 99 : 999999;
 
         char[][] input = LoadInputChars(11, example).toArray(char[][]::new);
 
-        boolean[] colsToExpand = new boolean[input[0].length];
-        boolean[] rowsToExpand = new boolean[input.length];
-        int expandVertically = 0;
-        int expandHorizontally = 0;
+        List<Integer> colsToExpand = new ArrayList<>();
+        List<Integer> rowsToExpand = new ArrayList<>();
 
         for(int i = 0; i < input.length; i++) {
             if (CheckForBlankRow(input, i)) {
-                rowsToExpand[i] = true;
-                expandVertically++;
+                rowsToExpand.add(i);
             }
-            else rowsToExpand[i] = false;
         }
         for(int i = 0; i < input[0].length; i++) {
             if (CheckForBlankColumn(input, i)) {
-                colsToExpand[i] = true;
-                expandHorizontally++;
-            }
-            else colsToExpand[i] = false;
-        }
-
-        char[][] expandedGridStep1 = new char[input.length][input[0].length+expandHorizontally];
-        char[][] expandedGrid = new char[input.length+expandVertically][input[0].length+expandHorizontally];
-
-        for(int j = 0; j < input.length; j++) {
-            int offset = 0;
-            for(int i = 0; i < input[0].length; i++) {
-                if(colsToExpand[i]) {
-                    expandedGridStep1[j][i+offset] = '.';
-                    offset++;
-                }
-                expandedGridStep1[j][i+offset] = input[j][i];
-            }
-        }
-
-        int offset = 0;
-        for(int j = 0; j < expandedGridStep1.length; j++) {
-            if(rowsToExpand[j]) {
-                offset++;
-            }
-            for(int i = 0; i < expandedGridStep1[0].length; i++) {
-                if(rowsToExpand[j]) {
-                    expandedGrid[j+offset-1][i] = '.';
-                }
-                expandedGrid[j+offset][i] = expandedGridStep1[j][i];
+                colsToExpand.add(i);
             }
         }
 
         var galaxies = new ArrayList<Vert>();
 
-        for(int j = 0; j < expandedGrid.length; j++) {
-            for(int i = 0; i < expandedGrid[0].length; i++) {
-                if(expandedGrid[j][i] == '#') galaxies.add(new Vert(i,j));
+        for(int j = 0; j < input.length; j++) {
+            for(int i = 0; i < input[0].length; i++) {
+                if(input[j][i] == '#') galaxies.add(new Vert(i,j));
             }
         }
 
-        var result = 0;
+        for(var galaxy: galaxies) {
+            var yOffset = rowsToExpand.stream().filter(r -> r < galaxy.y).count();
+            var xOffset = colsToExpand.stream().filter(r -> r < galaxy.x).count();
+
+            galaxy.x += xOffset * expandBy;
+            galaxy.y += yOffset * expandBy;
+        }
+
+        long result = 0;
 
         var pairs = GetPairs(galaxies);
 
