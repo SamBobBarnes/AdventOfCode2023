@@ -201,7 +201,7 @@ public class MainRunnerTests {
 
         var actual = Day12.Part1.Run(example);
 
-        Assertions.assertEquals(example ? 0:0, actual);
+        Assertions.assertEquals(example ? 21:0, actual);
     }
     @Theory
     public void Day12Part2(@FromDataPoints("example") boolean example) {
