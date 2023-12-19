@@ -62,18 +62,3 @@ public class Part1 extends AdventBase {
         return score;
     }
 }
-
-class Rock {
-    public Rock(char rock, int x, int y) {
-        if(rock == 'O') this.round = true;
-        else this.round = false;
-        this.x = x;
-        this.y = y;
-    }
-    public int x;
-    public int y;
-    public boolean round;
-    public String toString() {
-        return x + "," + y + " " + (round ? "O" : "#");
-    }
-}

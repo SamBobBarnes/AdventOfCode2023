@@ -240,7 +240,7 @@ public class MainRunnerTests {
 
         var actual = Day14.Part2.Run(example);
 
-        Assertions.assertEquals(example ? 0:0, actual);
+        Assertions.assertEquals(example ? 64:90982, actual);
     }
     //endregion
 }
