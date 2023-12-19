@@ -3,6 +3,7 @@ package Day13;
 import Base.AdventBase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Part1 extends AdventBase {
@@ -45,24 +46,40 @@ public class Part1 extends AdventBase {
 
     private static int FindMirror(Pattern pattern) {
         var lines = FindHorizontalMirror(pattern);
-        if(lines >= 0) return -lines;
+        if(lines > 0) return -lines;
         return FindVerticalMirror(pattern);
     }
 
     private static int FindVerticalMirror(Pattern pattern) {
-        return 0;
+        var newList = new ArrayList<char[]>();
+        for(int i = 0; i < pattern.width; i++) {
+            var charList = new char[pattern.pattern.size()];
+            for(int j = 0; j < pattern.height; j++) {
+                charList[j] = pattern.pattern.get(j)[i];
+            }
+            newList.add(charList);
+        }
+
+        var tempPattern = new Pattern(newList, true);
+
+        return FindHorizontalMirror(tempPattern);
     }
 
     private static int FindHorizontalMirror(Pattern pattern) {
         var length = pattern.pattern.size();
-        var shortSide = 1;
-        for(int i = 1; i < length-1; i++) {
+        var shortSide = 0;
+        var match = true;
+        for(int i = 1; i < length; i++) {
+            if(i <= length/2.0) shortSide++;
+            if(i > (length+1)/2.0) shortSide--;
+            match = true;
             for(int x = 0; x < shortSide; x++) {
-
+                if(!Arrays.equals(pattern.pattern.get(i + x), pattern.pattern.get(i - 1 - x))) {
+                    match = false;
+                    break;
+                }
             }
-
-            if(shortSide < length/2) shortSide++;
-            else shortSide--;
+            if(match) return i;
         }
 
         return 0;
@@ -77,6 +94,12 @@ class Pattern {
         for(var line: list) {
             this.pattern.add(line.toCharArray());
         }
+    }
+
+    public Pattern(List<char[]> pattern, boolean CharList) {
+        this.pattern = pattern;
+        this.width = this.pattern.getFirst().length;
+        this.height = this.pattern.size();
     }
     public List<char[]> pattern;
     public int width;
