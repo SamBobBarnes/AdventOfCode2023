@@ -25,29 +25,41 @@ public class Part1 extends AdventBase {
 
         rocks = RollNorth(rocks, width);
 
-        return 0;
+        var result = ScoreRocks(rocks,height);
+        return result;
     }
 
     private static List<Rock> RollNorth(List<Rock> rocks, int width) {
         List<Rock> newList = new ArrayList<>();
         for(int i = 0; i < width; i++) {
             int finalI = i;
-            var column = rocks.stream().filter(r -> r.x == finalI).toList();
+            var column = new ArrayList<>(rocks.stream().filter(r -> r.x == finalI).toList());
             // need to overwrite rocks
+            var index = 0;
             for(var rock: column) {
                 if(rock.round) {
                     var finalRestingY = rock.y;
-                    for(int y = rock.y; y >= 0; y--) {
+                    for(int y = rock.y-1; y >= 0; y--) {
                         int finalY = y;
                         if(column.stream().noneMatch(r -> r.y == finalY)) finalRestingY = y;
                         else break;
                     }
                     rock.y = finalRestingY;
+                    column.set(index, rock);
                 }
                 newList.add(rock);
+                index++;
             }
         }
         return newList;
+    }
+
+    private static int ScoreRocks(List<Rock> rocks, int height) {
+        var score = 0;
+        for(var rock: rocks) {
+            if(rock.round) score += height - rock.y;
+        }
+        return score;
     }
 }
 
@@ -61,4 +73,7 @@ class Rock {
     public int x;
     public int y;
     public boolean round;
+    public String toString() {
+        return x + "," + y + " " + (round ? "O" : "#");
+    }
 }
