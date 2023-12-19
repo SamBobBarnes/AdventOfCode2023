@@ -1,14 +1,25 @@
 package Day15;
 
 import Base.AdventBase;
-import java.util.List;
+
+import java.util.ArrayList;
 
 public class Part1 extends AdventBase {
-    public static int Run(boolean example) {
+    public static long Run(boolean example) {
         Start(15, 1, example);
 
-        List<String> input = LoadInput(15, example);
+        String input = LoadInput(15, example).getFirst();
+        var strings = input.split(",");
+        var hashList = new ArrayList<Integer>();
+        for(var string: strings) {
+            hashList.add(Hash.parseString(string));
+        }
+        var result = 0L;
 
-        return 0;
+        for(var hash: hashList) {
+            result += hash;
+        }
+
+        return result;
     }
 }
