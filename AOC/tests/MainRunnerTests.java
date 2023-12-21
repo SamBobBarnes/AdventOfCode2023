@@ -275,4 +275,20 @@ public class MainRunnerTests {
         Assertions.assertEquals(example ? 51:0, actual);
     }
     //endregion
+    //region Day17
+    @Theory
+    public void Day17Part1(@FromDataPoints("example") boolean example) {
+
+        var actual = Day17.Part1.Run(example);
+
+        Assertions.assertEquals(example ? 0:0, actual);
+    }
+    @Theory
+    public void Day17Part2(@FromDataPoints("example") boolean example) {
+
+        var actual = Day17.Part2.Run(example);
+
+        Assertions.assertEquals(example ? 0:0, actual);
+    }
+    //endregion
 }
