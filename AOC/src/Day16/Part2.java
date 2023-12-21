@@ -132,3 +132,47 @@ public class Part2 extends AdventBase {
         return print.toString();
     }
 }
+
+class Beam {
+    public Beam(Vector start, Vector end) {
+        this.start = start;
+        this.end = end;
+    }
+    public Vector start;
+    public Vector end;
+
+    public int DistanceCovered() {
+        if(start.x == end.x) return Math.abs(start.y - end.y);
+        return Math.abs(start.x - end.x);
+    }
+
+    public void MarkMap(boolean[][] energizedTiles) {
+        if(start.x == end.x) {
+            for(int i = start.y; i <= end.y; i++) {
+                energizedTiles[i][start.x] = true;
+            }
+            for(int i = start.y; i >= end.y; i--) {
+                energizedTiles[i][start.x] = true;
+            }
+        }
+        else  {
+            for(int i = start.x; i <= end.x; i++) {
+                energizedTiles[start.y][i] = true;
+            }
+            for(int i = start.x; i >= end.x; i--) {
+                energizedTiles[start.y][i] = true;
+            }
+        }
+    }
+}
+
+class Vector {
+    public Vector(int x, int y, Direction direction) {
+        this.x = x;
+        this.y = y;
+        this.direction = direction;
+    }
+    public int x;
+    public int y;
+    public Direction direction;
+}
