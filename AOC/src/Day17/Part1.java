@@ -2,6 +2,8 @@ package Day17;
 
 import Base.AdventBase;
 
+import java.util.PriorityQueue;
+
 import static java.lang.Integer.parseInt;
 
 public class Part1 extends AdventBase {
@@ -39,6 +41,36 @@ public class Part1 extends AdventBase {
             }
         }
 
-        return 0;
+        var start = nodes[0][0];
+        var end = nodes[nodes.length-1][nodes[0].length-1];
+
+        var result = Dijkstra(start, end);
+
+        return result;
+    }
+
+    private static int Dijkstra(Node start, Node end) {
+        start.distance = 0;
+
+        var q = new PriorityQueue<Node>();
+        q.add(start);
+
+        var stepsInOneDirection = 0;
+        Direction direction;
+
+        while(!q.isEmpty()) {
+            var top = q.poll();
+            top.Visit();
+
+            if(top.equals(end)) return (int)top.distance;
+
+            for(var neighbor: top.UnvisitedNeighbors()) {
+                var newDistance = top.distance + neighbor.value;
+                if(neighbor.distance > newDistance) neighbor.distance = newDistance;
+                if(!q.contains(neighbor)) q.add(neighbor);
+            }
+        }
+
+        return -1;
     }
 }
