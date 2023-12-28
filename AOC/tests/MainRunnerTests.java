@@ -1,15 +1,15 @@
-    //region Day24
+    //region Day25
     @Theory
-    public void Day24Part1(@FromDataPoints("example") boolean example) {
+    public void Day25Part1(@FromDataPoints("example") boolean example) {
 
-        var actual = Day24.Part1.Run(example);
+        var actual = Day25.Part1.Run(example);
 
         Assertions.assertEquals(example ? 0:0, actual);
     }
     @Theory
-    public void Day24Part2(@FromDataPoints("example") boolean example) {
+    public void Day25Part2(@FromDataPoints("example") boolean example) {
 
-        var actual = Day24.Part2.Run(example);
+        var actual = Day25.Part2.Run(example);
 
         Assertions.assertEquals(example ? 0:0, actual);
     }
