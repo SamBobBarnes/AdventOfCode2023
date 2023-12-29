@@ -60,42 +60,10 @@ public class Part1 extends AdventBase {
             var x1 = plan.startX;
             var y1 = plan.startY;
 
-            result += (x0 * y1) - (x1*y0);
-            perimeter += plan.length();
+            result += (int) ((x0 * y1) - (x1*y0));
+            perimeter += (int) plan.length();
         }
         return (Math.abs(result)/2 + perimeter/2) + 1;
     }
 }
 
-class DigPlan {
-    public char direction;
-    public int distance;
-    public int startX;
-    public int startY;
-    public int endX;
-    public int endY;
-    public DigPlan(char direction, int distance) {
-        this.direction = direction;
-        this.distance = distance;
-    }
-
-    public void SetStart(int x, int y) {
-        this.startX = x;
-        this.startY = y;
-    }
-
-    public void SetEnd(int x, int y) {
-        this.endX = x;
-        this.endY = y;
-    }
-
-    public int length() {
-        if(startY == endY) return Math.abs(endX-startX);
-        return Math.abs(endY-startY);
-    }
-
-    @Override
-    public String toString() {
-        return this.endX + "," + this.endY;
-    }
-}
