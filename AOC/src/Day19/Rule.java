@@ -2,7 +2,6 @@ package Day19;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
 
@@ -20,8 +19,10 @@ class Rule {
             var sections = line.split("\\{");
             name = sections[0];
             var operations = sections[1].substring(0,sections[1].length()-1).split(",");
+            var index = 0;
             for(var operation: operations) {
-                ops.add(new Operation(operation));
+                ops.add(new Operation(operation, this, index));
+                index++;
             }
         }
     }
@@ -41,6 +42,10 @@ class Rule {
         return 0;
     }
 
+    public int EvaluateRange(Step step, ArrayList<Step> steps, ArrayList<PartRange> accepted) {
+
+    }
+
     @Override
     public String toString() {
         return name;
@@ -48,12 +53,14 @@ class Rule {
 }
 
 class Operation {
+    public Rule parent;
+    public int parentIndex;
     public char compare;
     public int compareAgainst;
     public boolean gt;
     public String destString;
     public Rule dest;
-    public Operation(String line) {
+    public Operation(String line, Rule parent, int parentIndex) {
         var ops = line.split(":");
         if(ops.length > 1) {
             destString = ops[1];
@@ -65,6 +72,8 @@ class Operation {
         else {
             destString = ops[0];
         }
+        this.parent = parent;
+        this.parentIndex = parentIndex;
     }
 
     public int Evaluate(Part part) {
@@ -83,6 +92,52 @@ class Operation {
         else {
             if(compareValue < compareAgainst) return dest.Evaluate(part);
             else return 0;
+        }
+    }
+
+    public int EvaluateRange(Step step, ArrayList<Step> steps, ArrayList<PartRange> accepted) {
+        Range compareValue;
+        int variable;
+        switch (compare) {
+            case 'x': compareValue = step.parts.x; variable = 0; break;
+            case 'm': compareValue = step.parts.m; variable = 1; break;
+            case 'a': compareValue = step.parts.a; variable = 2; break;
+            case 's': compareValue = step.parts.s; variable = 3; break;
+            default: return dest.EvaluateRange(step, steps, accepted);
+        }
+
+        if(gt) {
+            if(compareValue.start > compareAgainst) {
+                //send on
+                return dest.EvaluateRange(step, steps, accepted);
+            }
+            if(compareValue.end <= compareAgainst) {
+                //send back
+                return 0;
+            }
+            else {
+                //split
+                var newRange = step.parts.Split(variable, compareAgainst-1);
+                steps.add(new Step(newRange,parent,parentIndex));
+                return 0;
+            }
+        }
+        else {
+            if(compareValue.start >= compareAgainst) {
+                //send back
+                return 0;
+
+            }
+            if(compareValue.end < compareAgainst) {
+                //send on
+                return dest.EvaluateRange(step, steps, accepted);
+            }
+            else {
+                //split
+                var newRange = step.parts.Split(variable, compareAgainst);
+                steps.add(new Step(newRange,parent,parentIndex));
+                return dest.EvaluateRange(step, steps, accepted);
+            }
         }
     }
 
