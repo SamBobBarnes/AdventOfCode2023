@@ -41,7 +41,7 @@ public class Part2 extends AdventBase {
 
         while (!partsList.isEmpty()) {
             var step = partsList.removeFirst();
-            in.EvaluateRange(step, partsList, acceptedParts);
+            Rule.EvaluateRangeAtStep(step, partsList, acceptedParts);
         }
 
         long result = 0;

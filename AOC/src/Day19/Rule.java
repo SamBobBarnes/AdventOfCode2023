@@ -43,7 +43,33 @@ class Rule {
     }
 
     public int EvaluateRange(Step step, ArrayList<Step> steps, ArrayList<PartRange> accepted) {
+        if(ender == 'R') return -1;
+        if(ender == 'A') {
+            accepted.add(step.parts);
+            return 1;
+        }
+        for(var op: ops) {
+            var result = op.EvaluateRange(step, steps, accepted);
+            if(result != 0) return result;
+        }
+        return 0;
+    }
 
+    public int EvaluateRange(Step step, ArrayList<Step> steps, ArrayList<PartRange> accepted, int index) {
+        if(ender == 'R') return -1;
+        if(ender == 'A') {
+            accepted.add(step.parts);
+            return 1;
+        }
+        for(int i = index; i < ops.size(); i++) {
+            var result = ops.get(i).EvaluateRange(step, steps, accepted);
+            if(result != 0) return result;
+        }
+        return 0;
+    }
+
+    public static void EvaluateRangeAtStep(Step step, ArrayList<Step> steps, ArrayList<PartRange> accepted) {
+        step.rule.EvaluateRange(step, steps, accepted,step.step);
     }
 
     @Override
@@ -117,7 +143,7 @@ class Operation {
             }
             else {
                 //split
-                var newRange = step.parts.Split(variable, compareAgainst-1);
+                var newRange = step.parts.Split(variable, compareAgainst+1);
                 steps.add(new Step(newRange,parent,parentIndex));
                 return 0;
             }
