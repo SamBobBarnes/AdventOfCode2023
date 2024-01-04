@@ -41,7 +41,7 @@ public class Part2 extends AdventBase {
 
         while (!partsList.isEmpty()) {
             var step = partsList.removeFirst();
-            Rule.EvaluateRangeAtStep(step, partsList, acceptedParts);
+            in.EvaluateRange(step, partsList, acceptedParts);
         }
 
         long result = 0;
@@ -81,10 +81,10 @@ class PartRange {
 
     public PartRange Split(int variable, int splitPoint) {
         var newPart = new PartRange();
-        newPart.x = this.x;
-        newPart.m = this.m;
-        newPart.a = this.a;
-        newPart.s = this.s;
+        newPart.x = new Range(this.x);
+        newPart.m = new Range(this.m);
+        newPart.a = new Range(this.a);
+        newPart.s = new Range(this.s);
         switch(variable) {
             case 0:
                 newPart.x = this.x.SplitAt(splitPoint);
@@ -123,6 +123,11 @@ class Range {
     public Range(int start, int end) {
         this.start = start;
         this.end = end;
+    }
+
+    public Range(Range range) {
+        this.start = range.start;
+        this.end = range.end;
     }
 
     public int length() {
