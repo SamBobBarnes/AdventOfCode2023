@@ -336,7 +336,7 @@ public class MainRunnerTests {
 
         var actual = Day20.Part2.Run(false);
 
-        Assertions.assertEquals(0, actual);
+        Assertions.assertEquals(241528184647003L, actual);
     }
     //endregion
 }
