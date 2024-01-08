@@ -2,8 +2,6 @@ package Day21;
 
 import Base.AdventBase;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.PriorityQueue;
 
 public class Part1 extends AdventBase {
@@ -82,53 +80,5 @@ public class Part1 extends AdventBase {
             }
         }
         return count;
-    }
-}
-
-class Node implements Comparable<Node> {
-    public Node North;
-    public Node East;
-    public Node South;
-    public Node West;
-    public boolean Rock;
-    public boolean Visited;
-    public double Distance = Double.POSITIVE_INFINITY;
-    public int x;
-    public int y;
-    public Node(int x, int y, boolean rock) {
-        this.Visited = false;
-        this.x = x;
-        this.y = y;
-        this.Rock = rock;
-    }
-
-    public void Visit() {
-        this.Visited = true;
-    }
-
-    public List<Node> GetUnvisitedNeighbors() {
-        var list = new ArrayList<Node>();
-        if(North != null && !North.Rock && !North.Visited) list.add(North);
-        if(East != null && !East.Rock && !East.Visited) list.add(East);
-        if(South != null && !South.Rock && !South.Visited) list.add(South);
-        if(West != null && !West.Rock && !West.Visited) list.add(West);
-        return list;
-    }
-
-    @Override
-    public int compareTo(Node o)
-    {
-        return (int)(this.Distance - o.Distance);
-    }
-
-    @Override
-    public String toString()
-    {
-        if(Rock) return " # ";
-        if(Distance == Double.POSITIVE_INFINITY) return " . ";
-        String text = String.valueOf((int)(Distance));
-        if(text.length() == 3) return text;
-        if(text.length() == 2) return text + " ";
-        return " " + text + " ";
     }
 }
